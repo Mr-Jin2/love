@@ -1,0 +1,450 @@
+<!------------------------------------------------
+	Developed by: Mike Thornton (Sweetsour)
+------------------------------------------------->
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8"/>
+    <script src="../static/js/jquery-3.5.1.min.js"></script>
+    <script>
+		/********************************
+		* All times are in milliseconds *
+		********************************/
+
+		var btnDelay = 4500;	 // Delay before the "next" button appears 				(Default: 4500)
+		var btnFadeIn = 400;	 // Amount of time for "next" button to fade in	 		(Default: 400)
+		var btnFadeOut = 750;	 // Amount of time for "next" button to fade out		(Default: 750)
+		var imgSlide = 2000;	 // Amount of time for an image to slide into position	(Default: 2000)
+		var imgFadeOut = 750;	 // Amount of time for an image to fade out				(Default: 750)
+		var descFadeIn = 750;	 // Amount of time for an image description to fade in	(Default: 750)
+		var descFadeOut = 750;	 // Amount of time for an image description to fade out	(Default: 750)
+		var isCountdown = true;  // Determine if you want a 3-second countdown			(Default: true)
+
+		var title = "Insert title here";	// This will appear as the text in the browser tab
+		var soName = "Insert your S/O's name here";
+
+
+		// Format: image name, date, description
+		var imgDetails = [
+			['example-1.jpg','Dec 31, 2021','我们第一次真正意义上的游玩。你静静地站在433米天台上，微风轻拂你的脸，夕阳也为你沉醉'],
+			['example-2.jpg','Jan 1, 2022','在海滨栈道上抓拍的这张照片，一直被你吐槽中年气息重，但却是我的心头好^_^'],
+			['example-3.jpg','Jan 2, 2022','还记得这张照片吗？不得不承认，我的衣服像是为你准备的，一切都显得相得益彰'],
+<!--			['example-4.jpg','Jan 2, 2022','蔚蓝的海水，远处的灯塔，咸咸的海风，你的背影。倘若还有机会，我会坐到你身旁边'],-->
+<!--			['example-5.jpg','Jan 2, 2022','我能想到最浪漫的事，就是和你相拥在日落的海岸线慢慢变老'],-->
+<!--			['example-6.jpg','Feb 11, 2022','还记得这张照片在哪里拍的吗？如果不记得，提示你一下: 大大泡泡糖和糖葫芦'],-->
+<!--			['example-7.jpg','Jan 17, 2022','我们背后是华南最大的优衣库，照片上的帅哥是我吗？这恐怕是我的颜值巅峰了'],-->
+<!--			['example-8.jpg','Jan 18, 2022','这是我们在别墅的回忆。嗑瓜子、做游戏、吃烧烤、唱歌、拍照，无忧无虑'],-->
+<!--			['example-9.jpg','Aug 13, 2022','戴着N95的你显得非常可爱'],-->
+<!--			['example-10.jpg','Aug 13, 2022','这是我们第一次使用拍立得吗？不知现在还剩下几张相纸'],-->
+<!--			['example-11.jpg','Aug 14, 2022','比头还大的椰子，现在看来莫名喜感'],-->
+<!--			['example-12.jpg','Aug 14, 2022','还记得这条长长的栈道吗？蓝天、白云、沙滩、浪花以及海风'],-->
+<!--			['example-13.jpg','Aug 14, 2022','这应该是那天最痛苦的记忆了吧，我靠着一句句"快到了~"把你骗到了终点'],-->
+<!--			['example-14.jpg','Sep 10, 2022','我们重游滕王阁，与上次不同的是: 这次我们非常开心:)'],-->
+<!--			['example-15.jpg','Sep 11, 2022','关于赣江的回忆，有龟裂的河堤，落日的余晖，温柔的风和野钓的人。那一瞬间我有憧憬我们未来的生活'],-->
+<!--			['example-16.jpg','Oct 30, 2022','可曾跟你说过我最喜欢秋天？我喜欢秋天的天高云淡、西风落叶，现在因为这张照片，又多了一个喜欢秋天的理由'],-->
+<!--			['example-17.jpg','Dec 25, 2022','这天的你是生气的，为何生气呢已记不得。希望此时你看到这张美丽的抓拍，原谅我以前的小气:)'],-->
+<!--			['example-18.jpg','Dec 31, 2022','2022年的最后一天是痛苦的，我们都是小阳人。但我们仍然看了大海，看了人海，看了海鸥，这一天也是快乐的'],-->
+<!--			['example-19.jpg','Jan 21, 2023','还记得你生日夜发生什么趣事吗？忍不住再提示你一下：被水灌透的鞋子，点不着的仙女棒与暖不热的手'],-->
+		];
+
+		// Delete all lines within the square brackers if you don't want any final words
+		// They will appear in the order of how they're listed below
+		var finalWords = [
+			"宝贝，什么是幸福？",
+			"你曾夸我是有大智慧的人，我大胆诠释一下",
+			"生活中的一个个美好瞬间串联起来就是幸福",
+			"我们以真诚和善良去追求、去热爱，生活也会报之以歌",
+			"在这段时间，我的性格几乎被重塑，you complete me",
+			"我想清楚了",
+			"在剩下的不到20000个日夜里，我不想再缺席你的生活一分一秒",
+			"余生我将会毫无保留地爱，将最好的都给你",
+			"愿意和我一起慢慢变老吗"
+		];
+
+		var finale = "愿意和我一起慢慢变老吗";
+
+		/****************************************
+		* DO NOT ALTER ANYTHING BELOW THIS LINE
+		****************************************/
+
+		function ImageResizer(width,height) {
+			var newWidth = 0, newHeight = 0;
+
+			if (width > height) {
+				if (width > 500 || width < 500) {
+					newWidth = 500;
+
+					var ratio = 500 / width;
+					newHeight = height * ratio;
+				} else {
+					return [width, height];
+				}
+			} else if (height > width) {
+				if (height > 500 || height < 500) {
+					newHeight = 500;
+
+					var ratio = 500 / height;
+					newWidth = width * ratio;
+				} else {
+					return [width, height];
+				}
+			}
+
+			return [newWidth, newHeight];
+		}
+
+
+		$(document).ready(function(){
+			$('title').html(title);
+			$('p.words').text("Welcome, "+soName+"!");
+			$('p.words').css({
+				"width" : $(window).width()+"px",
+				"margin" : "0 0 0 "+(($('#intro').width() - $(window).width()) / 2)+"px"
+			});
+
+			for (i=0; i < imgDetails.length; i++) {
+				$('body').append("<div class='glass imageBlock' id='imageBlock-"+(i+1)+"'>"+
+					"	<img id='image-"+(i+1)+"' src='../static/images/memories/"+imgDetails[i][0]+"'/>"+
+					"	<div class='words desc' id='desc-"+(i+1)+"'><span>"+imgDetails[i][1]+"</span><hr id='hr"+(i+1)+"'>"+imgDetails[i][2]+"</div>"+
+					"	<button type='button' class='nextBtn' id='toSlide-"+(i+2)+"'>&#10084;</button>"+
+					"</div>");
+
+				$('#image-'+(i+1)).on('load', function() {
+					// This will resize any images with a width or height greater than 500px
+					var imgSize = ImageResizer($(this).width(),$(this).height());
+
+					$(this).width(imgSize[0]);
+					$(this).height(imgSize[1]);
+
+					// Set the dimensions and margin to the div container
+					$(this).parent().css({
+						"width" : $(this).width()+"px",
+						"height" : $(this).height()+"px",
+						"margin" : (($(this).height() / 1.2) * -1)+"px 0 0 0"
+					});
+
+					// We need to reveal each image description so we can alter its CSS properties
+					$('.desc').show();
+
+					var descWidth = $(this).parent().find('div').width();
+					var diff = ($(this).width() - descWidth) / 2;
+					var spanWidth = $(this).parent().find('span').width();
+					var hrWidth = spanWidth - 40;
+
+					// Set the width and margin of the image description
+					$(this).parent().find('div').css({
+						"width" : $(window).width()+"px",
+						"margin" : "23px 0 0 "+(($(this).width() - $(window).width()) / 2)+"px"
+					});
+
+					// Set the width and margin of the divider line
+					$(this).parent().find('hr').css({
+						"width" : (hrWidth)+"px",
+						"margin" : "0 0 0 "+(($(window).width() - hrWidth) / 2)+"px"
+					});
+
+					// Set the margin and hide the heart "next" button
+					$(this).parent().find('button').css({
+						"margin" : ($(this).height() + 128)+"px 0 0 "+((($(this).width() / 2) + 21.5) * -1)+"px",
+						"display" : "none"
+					});
+
+					// Hide the image description once complete
+					$('.desc').hide();
+				});
+			}
+
+			for (i=0; i < finalWords.length; i++) {
+				$('body').append("<div class='words desc' id='desc-"+((i+1) + imgDetails.length)+"'>"+finalWords[i]+"</div>"+
+					"<button type='button' class='nextBtn' id='toImage-"+((i+2) + imgDetails.length)+"'>&#10084;</button>");
+
+				$('body').children('div').each(function() {
+					if ($(this).attr('id') == "desc-"+((i+1) + imgDetails.length)) {
+						$(this).css({
+							"width" : $(window).width()+"px",
+							"height" : "42px",
+							"margin" : "-21px 0 0 "+(($(window).width() / 2) * -1)+"px",
+							"left" : "50%",
+							"top" : "50%",
+							"display" : "none"
+						});
+					}
+				});
+
+				$('body').children('button').each(function() {
+					if ($(this).attr('id') == "toImage-"+((i+2) + imgDetails.length)) {
+						$(this).css({
+							"margin" : "-13.5px 0 0 -21.5px",
+							"left" : "50%",
+							"top" : "55%",
+							"display" : "none"
+						});
+					}
+				});
+			}
+
+			$('body').append("<div class='glass finale' id='imageBlock-"+((imgDetails.length + finalWords.length)+1)+"'>"+
+				"	<img id='finalImage' src='../static/images/finale.jpg'/>"+
+				"	<div class='words desc' id='desc-"+((imgDetails.length + finalWords.length)+1)+"'>"+finale+"</div>"+
+				"</div>");
+
+			$('#finalImage').on('load',function() {
+				$(this).parent().find('div').css({
+					"width" : $(window).width()+"px",
+					"margin" : "23px 0 0 "+(($(this).width() - $(window).width()) / 2)+"px"
+				});
+
+				$(this).parent().css({
+					"width" : $(this).width()+"px",
+					"height" : $(this).height()+"px",
+					"margin" : (($(this).height() / 2) * -1)+"px 0 0 "+(($(this).width() / 2) * -1)+"px",
+					"left" : "50%",
+					"display" : "none"
+				});
+
+
+			});
+
+			$('button').click(function() {
+				var thisImg = $(this).attr('id');
+
+				if (thisImg != "begin") {
+					var imgID = ((typeof(thisImg) == "string") ? thisImg.split("-") : 'nil');
+					var nextImg = "imageBlock-"+(Number(imgID[1]));
+
+					if ((Number(imgID[1]) - 1) == imgDetails.length) {
+						if (finalWords.length > 0) {
+						    $('audio#music')[0].pause()
+	                        $('audio#music1')[0].play()
+							$(this).parent().fadeOut(imgFadeOut);
+							$(this).parent().find('div').fadeOut(descFadeOut);
+							$(this).fadeOut(btnFadeOut, function() {
+								$('body').find('div#desc-'+imgID[1]).fadeIn(descFadeIn);
+								$('body').find('button#toImage-'+(Number(imgID[1])+1)).delay(btnDelay).fadeIn(btnFadeIn);
+							});
+						}
+					} else if ((Number(imgID[1]) - 1) > imgDetails.length && (Number(imgID[1]) - 1) < (imgDetails.length + finalWords.length)) {
+						$('body').find('div#desc-'+(imgID[1] - 1)).fadeOut(descFadeOut);
+						$(this).fadeOut(btnFadeOut, function() {
+							$('body').find('div#desc-'+imgID[1]).fadeIn(descFadeIn);
+							$('body').find('button#toImage-'+(Number(imgID[1])+1)).delay(btnDelay).fadeIn(btnFadeIn);
+						});
+					} else if (Number(imgID[1]) > (imgDetails.length + finalWords.length)) {
+						$('body').find('div#desc-'+(imgID[1]-1)).fadeOut(descFadeOut);
+						$(this).fadeOut(btnFadeOut, function() {
+							$('#imageBlock-'+imgID[1]).delay(2000).fadeIn(2000, function() {
+								$('#desc-'+imgID[1]).delay(2500).fadeIn(1500);
+							});
+						});
+					} else {
+						$(this).parent().fadeOut(imgFadeOut);
+						$(this).parent().find('div').fadeOut(descFadeOut);
+						$(this).fadeOut(btnFadeOut, function() {
+							$('body').children('div').each(function() {
+								if ($(this).attr('id') == nextImg) {
+									$(this).animate({
+										left: '+'+($(window).width() / 2) - ($(this).width() / 2)
+									}, imgSlide, function() {
+										$(this).find('div').fadeIn(descFadeIn);
+										$(this).find('button').delay(btnDelay).fadeIn(btnFadeIn);
+									});
+								}
+							});
+
+						});
+					}
+				}
+			});
+		});
+
+    </script>
+    <script src="../static/js/jquery.fullscreen.min.js"></script>
+    <style type="text/css">
+		html,
+		body {
+			height: 100%;
+			background-image: url('../static/images/bg.png');
+			overflow: hidden;
+		}
+		
+		.words {
+			font-family: candara;
+			font-size: 15pt;
+			color: #FFF;
+			text-shadow: 2px 2px 2px #000;
+			text-align: center;
+		}
+		
+		span {
+			font-size: 23pt;
+		}
+		
+		hr {
+			height: 1px;
+			background-color: #FFF;
+			box-shadow: 1px 2px 1px #444;
+		}
+		
+		#intro {
+			width: 300px;
+			height: 50px;
+			margin: -50px 0 0 -150px;
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			text-align: center;
+		}
+		
+		#intro p {
+			margin: 0;
+		}
+		
+		button {
+			font-size: 13pt;
+			border-radius: 5px;
+			background-color: #f88379;
+		}
+		
+		.glass {
+			backdrop-filter: contrast(130%) brightness(100%) blur(2px);
+			background:
+			radial-gradient(
+				ellipse at 16.7% -10%,
+				hsla(0, 0%, 100%, 0.44) 24%,
+				hsla(0, 0%, 100%, 0.4) 25%,
+				hsla(0, 0%, 100%, 0.2) 45%,
+				hsla(0, 0%, 100%, 0.1)
+			);
+			background-size: 300% 100%;
+			border-radius: 10px;
+			box-shadow:
+			0 2px 1px hsla(0, 0%, 100%, 0.5) inset,
+			0 -2px 1px hsla(250, 70%, 5%, 0.3) inset,
+			0 -2px 6px hsla(0, 0%, 100%, 0.25);
+		}
+
+		.imageBlock {
+			left: -1000px;
+			top: 50%;
+			position: absolute;
+			padding: 20px;
+			border-radius: 10px;
+		}
+		
+		.finale {
+			top: 50%;
+			left: -50%;
+			position: absolute;
+			padding: 20px;
+			border-radius: 10px;
+		}
+		
+		.desc {
+			position: absolute;
+			margin: 23px 0 0 -209px;
+		}
+		
+		#count-1, #count-2, #count-3 {
+			font-size: 400pt;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			font-family: sans-serif;
+			display: none;
+			transform: scale(1);
+			transition: transform 10000ms ease-in-out;
+		}
+		
+		#count-1, #count-2 {
+			width: 296px;
+			height: 600px;
+			margin: -300px 0 0 -148px;
+		}
+		
+		#count-3 {
+			width: 297px;
+			height: 607px;
+			margin: -303.5px 0 0 -148.5px;
+		}
+		
+		#blanket {
+			width: 100%;
+			height: 105%;
+			background-color: rgba(25,25,25,0.5);
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+		
+		.nextBtn {
+			width: 43px;
+			height: 43px;
+			font-size: 28px;
+			background-color: #FEBBB7;
+			color: #E86D75;
+			position: absolute;
+		}
+		
+		.nextBtn:hover {
+			background-color: #E86D75;
+			color: #FEBBB7;
+		}
+
+    </style>
+</head>
+<body>
+<audio id="music"  loop="loop">
+    <source src="../static/audio/late_night_melancholy.mp3" type="audio/mpeg">
+</audio>
+<audio id="music1"  loop="loop">
+    <source src="../static/audio/bg_music.mp3" type="audio/mpeg">
+</audio>
+<div id="blanket"></div>
+<div class="words" id="count-3">3</div>
+<div class="words" id="count-2">2</div>
+<div class="words" id="count-1">1</div>
+<div id="intro">
+    <p class="words"></p>
+    <button type="button" id="begin">Let's Begin Our Adventure!</button>
+</div>
+</body>
+<script type="text/javascript">
+$('#intro button').click(function() {
+	$('body').fullscreen();
+	$('audio#music')[0].play()
+	$('#intro').fadeOut(400,function() {
+		if (isCountdown) {
+			$('#count-3').fadeIn(500, function() {
+				$(this).delay(1000).fadeOut(500, function() {
+					$('#count-2').delay(500).fadeIn(500, function() {
+						$(this).delay(1000).fadeOut(500, function() {
+							$('#count-1').delay(500).fadeIn(500, function() {
+								$(this).delay(1000).fadeOut(500, function() {
+									$('#imageBlock-1').delay(500).animate({
+										left: '+'+($(window).width() / 2) - ($('#imageBlock-1').width() / 2)
+									}, imgSlide, function() {
+										$('#desc-1').fadeIn(descFadeIn);
+										$('#imageBlock-1 button').delay(btnDelay).fadeIn(btnFadeIn);
+									});
+								});
+							});
+						});
+					});
+				});
+			});
+		} else {
+			$('#imageBlock-1').delay(500).animate({
+				left: '+'+($(window).width() / 2) - ($('#imageBlock-1').width() / 2)
+			}, imgSlide, function() {
+				$('#desc-1').fadeIn(descFadeIn);
+				$('#imageBlock-1 button').delay(btnDelay).fadeIn(btnFadeIn);
+			});
+		}
+	});
+});
+
+</script>
+
+</html>
